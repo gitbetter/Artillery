@@ -9,6 +9,7 @@
 class UTankBarrel;
 class UTankTurret;
 class UTankAimingComponent;
+class AExplosiveShell;
 
 UCLASS()
 class ARTILLERY_API ATank : public APawn
@@ -19,16 +20,6 @@ public:
 	// Sets default values for this pawn's properties
 	ATank();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UTankAimingComponent* TankAimingComponent = nullptr;
-
-public:	
-	UPROPERTY(EditAnywhere, Category = Firing)
-	float launchSpeed = 100000.0f;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -38,5 +29,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetTurretReference(UTankTurret* TurretToSet);
 
+	UFUNCTION(BlueprintCallable, Category = Input)
+	void Fire();
+
 	void AimAt(FVector HitLocation);
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	UTankAimingComponent* TankAimingComponent = nullptr;
+
+private:
+	UPROPERTY(EditAnywhere, Category = Firing)
+	float launchSpeed = 4000.0f;
+
+	UPROPERTY(EditAnywhere, Category = Setup)
+	TSubclassOf<AExplosiveShell> ProjectileShellBlueprint;
+
+	UTankBarrel* Barrel = nullptr;
+
+	float reloadTimeInSeconds = 3.0f;
+	double lastFireTime = 0.0f;
 };
