@@ -17,5 +17,5 @@ class ARTILLERY_API UTankTrack : public UStaticMeshComponent
 public:
 	UFUNCTION(BlueprintCallable, Category = Input) void SetThrottle(float throttle);
 
-	UPROPERTY(EditDefaultsOnly) float MaxDrivingForce = 400000.0f;
+	UPROPERTY(EditDefaultsOnly) float MaxDrivingForce = 45000000.0f;
 };
