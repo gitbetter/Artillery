@@ -9,19 +9,25 @@
 class UTankBarrel;
 class UTankTurret;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UENUM()
+enum class EFiringState: uint8 {
+	Locked, Aiming, Reloading
+};
+
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARTILLERY_API UTankAimingComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
-	UTankAimingComponent();
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
 	void AimAt(FVector AimLocation, float launchSpeed);
 
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
-	void SetTurretReference(UTankTurret* TurretToSet);
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = State)
+	EFiringState firingState = EFiringState::Aiming;
 
 private:
 	UTankBarrel* Barrel = nullptr;

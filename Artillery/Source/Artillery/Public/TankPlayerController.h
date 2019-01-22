@@ -16,12 +16,16 @@ class ARTILLERY_API ATankPlayerController : public APlayerController
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float deltaTime) override;
+
+protected:
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	ATank* GetControlledTank() const;
+
 private:
 	UPROPERTY(EditDefaultsOnly) float crosshairXLocation = 0.5f;
 	UPROPERTY(EditDefaultsOnly) float crosshairYLocation = 0.33333f;
 	UPROPERTY(EditDefaultsOnly) float lineTraceRange = 100000.0f;
 
-	ATank* GetControlledTank() const;
 	void AimTowardsCrosshair();
 	bool GetSightRayHitLocation(FVector& outHitLocation) const;
 	void GetCrosshairScreenLocation(FVector2D& screenLocation) const;

@@ -6,23 +6,8 @@
 #include "TankTurret.h"
 #include "Components/StaticMeshComponent.h"
 
-// Sets default values for this component's properties
-UTankAimingComponent::UTankAimingComponent()
-{
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
-}
-
-void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
-{
-	if (!BarrelToSet) return;
+void UTankAimingComponent::Initialize(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet) {
 	Barrel = BarrelToSet;
-}
-
-void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
-{
-	if (!TurretToSet) return;
 	Turret = TurretToSet;
 }
 
@@ -53,6 +38,8 @@ void UTankAimingComponent::AimAt(FVector AimLocation, float launchSpeed)
 
 void UTankAimingComponent::MoveBarrel(const FVector& aimDirection)
 {
+	if (!Barrel || !Turret) return;
+
 	FRotator barrelRotator = Barrel->GetForwardVector().Rotation();
 	FRotator aimRotator = aimDirection.Rotation();
 	FRotator deltaRotator = aimRotator - barrelRotator;
