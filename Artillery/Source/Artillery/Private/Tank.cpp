@@ -40,7 +40,7 @@ void ATank::AimAt(FVector HitLocation) {
 }
 
 void ATank::Fire() {
-	bool isReloaded = (FPlatformTime::Seconds() - lastFireTime) > reloadTimeInSeconds;
+	bool isReloaded = (GetWorld()->GetTimeSeconds() - lastFireTime) > reloadTimeInSeconds;
 
 	if (Barrel && isReloaded) {
 		AExplosiveShell* shell = GetWorld()->SpawnActor<AExplosiveShell>(
@@ -50,7 +50,7 @@ void ATank::Fire() {
 			);
 
 		shell->LaunchProjectile(launchSpeed);
-		lastFireTime = FPlatformTime::Seconds();
+		lastFireTime = GetWorld()->GetTimeSeconds();
 	}
 }
 

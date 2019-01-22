@@ -17,9 +17,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float deltaTime) override;
 private:
-	UPROPERTY(EditAnywhere) float crosshairXLocation = 0.5f;
-	UPROPERTY(EditAnywhere) float crosshairYLocation = 0.33333f;
-	UPROPERTY(EditAnywhere) float lineTraceRange = 100000.0f;
+	UPROPERTY(EditDefaultsOnly) float crosshairXLocation = 0.5f;
+	UPROPERTY(EditDefaultsOnly) float crosshairYLocation = 0.33333f;
+	UPROPERTY(EditDefaultsOnly) float lineTraceRange = 100000.0f;
 
 	ATank* GetControlledTank() const;
 	void AimTowardsCrosshair();
