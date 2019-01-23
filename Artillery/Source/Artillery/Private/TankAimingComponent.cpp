@@ -7,6 +7,25 @@
 #include "ExplosiveShell.h"
 #include "Components/StaticMeshComponent.h"
 
+UTankAimingComponent::UTankAimingComponent() {
+	bWantsBeginPlay = true;
+	PrimaryComponentTick.bCanEverTick = true;
+}
+
+void UTankAimingComponent::BeginPlay() {
+	lastFireTime = GetWorld()->GetTimeSeconds();
+}
+
+void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction) {
+	if ((GetWorld()->GetTimeSeconds() - lastFireTime) < reloadTimeInSeconds) {
+		firingState = EFiringState::Reloading;
+	} else if (IsBarrelMoving()) {
+		firingState = EFiringState::Aiming;
+	} else {
+		firingState = EFiringState::Locked;
+	}
+}
+
 void UTankAimingComponent::Initialize(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet) {
 	Barrel = BarrelToSet;
 	Turret = TurretToSet;
@@ -31,7 +50,7 @@ void UTankAimingComponent::AimAt(FVector AimLocation)
 			ESuggestProjVelocityTraceOption::DoNotTrace)
 		) return;
 
-	FVector aimDirection = outLaunchVelocity.GetSafeNormal();
+	aimDirection = outLaunchVelocity.GetSafeNormal();
 	FString tankName = GetOwner()->GetName();
 	
 	MoveBarrel(aimDirection);
@@ -49,12 +68,15 @@ void UTankAimingComponent::MoveBarrel(const FVector& aimDirection)
 	Turret->Rotate(deltaRotator.Yaw);
 }
 
+bool UTankAimingComponent::IsBarrelMoving() const {
+	if (!ensure(Barrel)) return false;
+	return !Barrel->GetForwardVector().Equals(aimDirection);
+}
+
 void UTankAimingComponent::Fire() {
 	if (!ensure(Barrel && ProjectileShellBlueprint)) return;
 
-	bool isReloaded = (GetWorld()->GetTimeSeconds() - lastFireTime) > reloadTimeInSeconds;
-
-	if (isReloaded) {
+	if (firingState != EFiringState::Reloading) {
 		AExplosiveShell* shell = GetWorld()->SpawnActor<AExplosiveShell>(
 			ProjectileShellBlueprint,
 			Barrel->GetSocketLocation("ProjectileStart"),

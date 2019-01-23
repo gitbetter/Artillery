@@ -30,8 +30,13 @@ public:
 	void AimAt(FVector AimLocation);
 
 protected:
+	UTankAimingComponent();
+
 	UPROPERTY(BlueprintReadOnly, Category = State)
-	EFiringState firingState = EFiringState::Locked;
+	EFiringState firingState = EFiringState::Reloading;
+
+	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 private:
 	UTankBarrel* Barrel = nullptr;
@@ -48,5 +53,9 @@ private:
 
 	float lastFireTime = 0.0f;
 
+	FVector aimDirection;
+
 	void MoveBarrel(const FVector& aimDirection);
+
+	bool IsBarrelMoving() const;
 };
