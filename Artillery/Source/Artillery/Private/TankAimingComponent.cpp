@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "ExplosiveShell.h"
 #include "Components/StaticMeshComponent.h"
 
 void UTankAimingComponent::Initialize(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet) {
@@ -11,9 +12,9 @@ void UTankAimingComponent::Initialize(UTankBarrel * BarrelToSet, UTankTurret * T
 	Turret = TurretToSet;
 }
 
-void UTankAimingComponent::AimAt(FVector AimLocation, float launchSpeed)
+void UTankAimingComponent::AimAt(FVector AimLocation)
 {
-	if (!Barrel) return;
+	if (!ensure(Barrel)) return;
 
 	FVector outLaunchVelocity(0);
 	FVector startLocation = Barrel->GetSocketLocation(FName("ProjectileStart"));
@@ -38,7 +39,7 @@ void UTankAimingComponent::AimAt(FVector AimLocation, float launchSpeed)
 
 void UTankAimingComponent::MoveBarrel(const FVector& aimDirection)
 {
-	if (!Barrel || !Turret) return;
+	if (!ensure(Barrel && Turret)) return;
 
 	FRotator barrelRotator = Barrel->GetForwardVector().Rotation();
 	FRotator aimRotator = aimDirection.Rotation();
@@ -46,5 +47,22 @@ void UTankAimingComponent::MoveBarrel(const FVector& aimDirection)
 
 	Barrel->Elevate(deltaRotator.Pitch);
 	Turret->Rotate(deltaRotator.Yaw);
+}
+
+void UTankAimingComponent::Fire() {
+	if (!ensure(Barrel && ProjectileShellBlueprint)) return;
+
+	bool isReloaded = (GetWorld()->GetTimeSeconds() - lastFireTime) > reloadTimeInSeconds;
+
+	if (isReloaded) {
+		AExplosiveShell* shell = GetWorld()->SpawnActor<AExplosiveShell>(
+			ProjectileShellBlueprint,
+			Barrel->GetSocketLocation("ProjectileStart"),
+			Barrel->GetSocketRotation("ProjectileStart")
+		);
+
+		shell->LaunchProjectile(launchSpeed);
+		lastFireTime = GetWorld()->GetTimeSeconds();
+	}
 }
 

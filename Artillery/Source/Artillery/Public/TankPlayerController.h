@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
-class ATank;
+class UTankAimingComponent;
 
 UCLASS()
 class ARTILLERY_API ATankPlayerController : public APlayerController
@@ -19,7 +19,10 @@ public:
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = Setup)
-	ATank* GetControlledTank() const;
+	UTankAimingComponent* GetAimingComponent() const;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Setup)
+	void FoundAimingComponent(UTankAimingComponent* AimCompRef);
 
 private:
 	UPROPERTY(EditDefaultsOnly) float crosshairXLocation = 0.5f;

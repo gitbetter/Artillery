@@ -26,7 +26,6 @@ void AExplosiveShell::Tick(float DeltaTime) {
 }
 
 void AExplosiveShell::LaunchProjectile(float speed) {
-	UE_LOG(LogTemp, Warning, TEXT("Projectile fired at %f"), speed);
 	ShellMovementComponent->SetVelocityInLocalSpace(FVector::ForwardVector * speed);
 	ShellMovementComponent->Activate();
 }
