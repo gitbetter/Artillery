@@ -29,6 +29,8 @@ public:
 
 	void AimAt(FVector AimLocation);
 
+	EFiringState GetFiringState() const;
+
 protected:
 	UTankAimingComponent();
 

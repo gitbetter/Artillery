@@ -19,8 +19,9 @@ class ARTILLERY_API ATankAIController : public AAIController
 public:
 	virtual void Tick(float DeltaTime) override;
 
-private:
-	float acceptanceRadius = 3000.0f;
+protected:
+	UPROPERTY(EditDefaultsOnly) float acceptanceRadius = 8000.0f;
 
+private:
 	UTankAimingComponent* GetAimingComponent() const;
 };
