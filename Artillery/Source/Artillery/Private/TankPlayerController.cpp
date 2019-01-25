@@ -20,10 +20,6 @@ void ATankPlayerController::BeginPlay()
 	}
 }
 
-UTankAimingComponent* ATankPlayerController::GetAimingComponent() const {
-	return GetPawn()->FindComponentByClass<UTankAimingComponent>();
-}
-
 void ATankPlayerController::AimTowardsCrosshair() {
 	if (!ensure(GetAimingComponent())) return;
 
@@ -31,6 +27,11 @@ void ATankPlayerController::AimTowardsCrosshair() {
 	if (GetSightRayHitLocation(HitLocation)) {
 		GetAimingComponent()->AimAt(HitLocation);
 	}
+}
+
+UTankAimingComponent* ATankPlayerController::GetAimingComponent() const {
+	if (!GetPawn()) return nullptr;
+	return GetPawn()->FindComponentByClass<UTankAimingComponent>();
 }
 
 bool ATankPlayerController::GetSightRayHitLocation(FVector & outHitLocation) const {

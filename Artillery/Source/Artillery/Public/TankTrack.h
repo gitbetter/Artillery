@@ -6,6 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "TankTrack.generated.h"
 
+class UPrimitiveComponent;
+
 /**
  * 
  */
@@ -15,7 +17,22 @@ class ARTILLERY_API UTankTrack : public UStaticMeshComponent
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(EditDefaultsOnly) float MaxDrivingForce = 40000000.0f;
 	UFUNCTION(BlueprintCallable, Category = Input) void SetThrottle(float throttle);
 
-	UPROPERTY(EditDefaultsOnly) float MaxDrivingForce = 40000000.0f;
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	UTankTrack();
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+	void ApplySidewaysForce();
+	void DriveTrack();
+
+	UPrimitiveComponent* GetTankRoot();
+
+	float currentThrottle = 0;
 };
