@@ -12,7 +12,7 @@ class AExplosiveShell;
 
 UENUM()
 enum class EFiringState: uint8 {
-	Locked, Aiming, Reloading
+	Locked, Aiming, Reloading, Disabled
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = State)
 	EFiringState firingState = EFiringState::Reloading;
 
+	UPROPERTY(BlueprintReadOnly, Category = State)
+	int shellsLeft = 3;
+
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
@@ -48,7 +51,7 @@ private:
 	TSubclassOf<AExplosiveShell> ProjectileShellBlueprint;
 
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
-	float launchSpeed = 4000.0f;
+	float launchSpeed = 8000.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float reloadTimeInSeconds = 3.0f;

@@ -17,7 +17,9 @@ void UTankAimingComponent::BeginPlay() {
 }
 
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction) {
-	if ((GetWorld()->GetTimeSeconds() - lastFireTime) < reloadTimeInSeconds) {
+    if (shellsLeft <= 0) {
+		firingState = EFiringState::Disabled;
+    } else if ((GetWorld()->GetTimeSeconds() - lastFireTime) < reloadTimeInSeconds) {
 		firingState = EFiringState::Reloading;
 	} else if (IsBarrelMoving()) {
 		firingState = EFiringState::Aiming;
@@ -80,7 +82,7 @@ bool UTankAimingComponent::IsBarrelMoving() const {
 void UTankAimingComponent::Fire() {
 	if (!ensure(Barrel && ProjectileShellBlueprint)) return;
 
-	if (firingState != EFiringState::Reloading) {
+	if (firingState != EFiringState::Reloading && firingState != EFiringState::Disabled) {
 		AExplosiveShell* shell = GetWorld()->SpawnActor<AExplosiveShell>(
 			ProjectileShellBlueprint,
 			Barrel->GetSocketLocation("ProjectileStart"),
@@ -89,6 +91,7 @@ void UTankAimingComponent::Fire() {
 
 		shell->LaunchProjectile(launchSpeed);
 		lastFireTime = GetWorld()->GetTimeSeconds();
+		--shellsLeft;
 	}
 }
 
